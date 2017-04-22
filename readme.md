@@ -12,6 +12,7 @@ library(devtools)
 
 install_github("adambakewell/saplings")
 library(saplings)
+```
 
 ## Examples
 
@@ -38,7 +39,9 @@ tree<-rtree(n=10, tip.label=LETTERS[1:10])
 
 # and a data frame similar to one used for comparative analyses
 Species<-LETTERS[1:10]
-# if you leave your column with names in as Species then tips_with_traits will automatically match species names to names on the phylogeny, otherwise specify names.col="my species column name" in the main command
+# if you leave your column with names in as Species then tips_with_traits will automatically match 
+#species names to names on the phylogeny, otherwise specify names.col="my species column name" 
+#in the main command
 trait1<-c(1,5,3,2,NA,1,8,NA,NA,10)
 trait2<-c(NA,4,2,2,1,3,NA,NA,1,2)
 data<-data.frame(Species, trait1, trait2)
@@ -47,7 +50,8 @@ data<-data.frame(Species, trait1, trait2)
 ![plot with one trait](figures/tips_with_traits1.png)
 
 ```r
-# now an example with multiple traits, so it shows how a combination of traits going into a PGLS are distributed for example... instead of colouring the names you can mark the tips with dots.
+# now an example with multiple traits, so it shows how a combination of traits going into a PGLS
+# are distributed for example... instead of colouring the names you can mark the tips with dots.
 tips_with_traits(traits=c('trait1', 'trait2'), data=data, tree=tree, ptype='tips', pres.col='green')
 ```
 
@@ -65,7 +69,9 @@ data<-data.frame(Species, trait1, trait2)
 # simulate a tree
 tree<-rtree(10, tip.label=LETTERS[seq(1, 20, by=2)])
 LETTERS[seq(1, 20, by=2)]
-# tree contains species called every second letter: A, C, E, G, I, K, M, O, Q, S... Data frame contains species called the first 10 letters of the alpahabet, those not matching the phylogeny (e.g. B, D...) should be removed before plotting
+# tree contains species called every second letter: A, C, E, G, I, K, M, O, Q, S... Data
+# frame contains species called the first 10 letters of the alpahabet, those not matching the phylogeny
+# (e.g. B, D...) should be removed before plotting
 
 #data frame before
 print(data)
