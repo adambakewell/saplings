@@ -1,5 +1,5 @@
-Package: tenuous.saplings
-Title: Tenuous Saplings
+Package: saplings
+Title: saplings
 Version: 0.0-1
 Authors@R: person("Adam", "Bakewell", email = "ab1348@york.ac.uk", role = c("aut", "cre"))
 Description: Primitive functions for speeding up elements of a phylogenetic comparative workflow
