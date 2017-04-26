@@ -1,9 +1,9 @@
 Package: saplings
 Title: saplings
-Version: 0.0-1
+Version: 0.0-2
 Authors@R: person("Adam", "Bakewell", email = "ab1348@york.ac.uk", role = c("aut", "cre"))
 Description: Primitive functions for speeding up elements of a phylogenetic comparative workflow
-Depends: R (>= 3.3.1), caper
+Depends: R (>= 3.3.1), caper, eulerr
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true

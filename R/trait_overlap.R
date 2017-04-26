@@ -21,117 +21,90 @@ if(length(traits)>5){warning("trait_overlap currently supports maximum five trai
 	}
 }
 
-trait_overlap<-function(traits, data, ...){
+trait_overlap<-function(traits, data, plot=FALSE,...){
 	trait_matrix<-make_trait_matrix(traits)
 	rows<-nrow(trait_matrix)
-	suppressWarnings(trait_matrix[rows,2]<-nrow(na.omit(data[which(colnames(data)==traits)])))
+	lastrow<-suppressWarnings(trait_matrix[rows,2]<-nrow(na.omit(data[which(colnames(data)==traits)])))
 	if(length(traits)==1){
-		print(trait_matrix)
 		} else if (length(traits)==2){
-			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-as.numeric(trait_matrix[rows,2])
-			print(trait_matrix)
+			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-lastrow
+			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-lastrow
 		} else if (length(traits)==3){
-			trait_matrix[4,2]<-nrow(na.omit(data[,traits[c(1,2)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[5,2]<-nrow(na.omit(data[,traits[c(1,3)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[6,2]<-nrow(na.omit(data[,traits[c(2,3)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-as.numeric(trait_matrix[rows,2])-as.numeric(trait_matrix[4,2])-as.numeric(trait_matrix[5,2])
-			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-as.numeric(trait_matrix[rows,2])-as.numeric(trait_matrix[4,2])-as.numeric(trait_matrix[6,2])
-			trait_matrix[3,2]<-length(na.omit(data[,traits[3]]))-as.numeric(trait_matrix[rows,2])-as.numeric(trait_matrix[5,2])-as.numeric(trait_matrix[6,2])
-			print(trait_matrix)
-		} else if (length(traits==4)){
-			trait_matrix[11,2]<-nrow(na.omit(data[,traits[c(1,2,3)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[12,2]<-nrow(na.omit(data[,traits[c(1,2,4)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[13,2]<-nrow(na.omit(data[,traits[c(1,3,4)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[14,2]<-nrow(na.omit(data[,traits[c(2,3,4)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[5,2]<-nrow(na.omit(data[,traits[c(1,2)]]))-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[6,2]<-nrow(na.omit(data[,traits[c(1,3)]]))-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[7,2]<-nrow(na.omit(data[,traits[c(1,4)]]))-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[8,2]<-nrow(na.omit(data[,traits[c(2,3)]]))-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[9,2]<-nrow(na.omit(data[,traits[c(2,4)]]))-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[10,2]<-nrow(na.omit(data[,traits[c(3,4)]]))-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-as.numeric(trait_matrix[5,2])-as.numeric(trait_matrix[6,2])-as.numeric(trait_matrix[7,2])-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-as.numeric(trait_matrix[5,2])-as.numeric(trait_matrix[8,2])-as.numeric(trait_matrix[9,2])-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[3,2]<-length(na.omit(data[,traits[3]]))-as.numeric(trait_matrix[6,2])-as.numeric(trait_matrix[8,2])-as.numeric(trait_matrix[10,2])-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[4,2]<-length(na.omit(data[,traits[4]]))-as.numeric(trait_matrix[7,2])-as.numeric(trait_matrix[9,2])-as.numeric(trait_matrix[10,2])-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[rows,2])
-			print(trait_matrix)
+			ab<-trait_matrix[4,2]<-nrow(na.omit(data[,traits[c(1,2)]]))-lastrow
+			ac<-trait_matrix[5,2]<-nrow(na.omit(data[,traits[c(1,3)]]))-lastrow
+			bc<-trait_matrix[6,2]<-nrow(na.omit(data[,traits[c(2,3)]]))-lastrow
+			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-lastrow-ab-ac
+			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-lastrow-ab-ac
+			trait_matrix[3,2]<-length(na.omit(data[,traits[3]]))-lastrow-ac-bc
+		} else if (length(traits)==4){
+			abc<-trait_matrix[11,2]<-nrow(na.omit(data[,traits[c(1,2,3)]]))-lastrow
+			abd<-trait_matrix[12,2]<-nrow(na.omit(data[,traits[c(1,2,4)]]))-lastrow
+			acd<-trait_matrix[13,2]<-nrow(na.omit(data[,traits[c(1,3,4)]]))-lastrow
+			bcd<-trait_matrix[14,2]<-nrow(na.omit(data[,traits[c(2,3,4)]]))-lastrow
+			ab<-trait_matrix[5,2]<-nrow(na.omit(data[,traits[c(1,2)]]))-abc-abd-lastrow
+			ac<-trait_matrix[6,2]<-nrow(na.omit(data[,traits[c(1,3)]]))-abc-acd-lastrow
+			ad<-trait_matrix[7,2]<-nrow(na.omit(data[,traits[c(1,4)]]))-abd-acd-lastrow
+			bc<-trait_matrix[8,2]<-nrow(na.omit(data[,traits[c(2,3)]]))-abc-bcd-lastrow
+			bd<-trait_matrix[9,2]<-nrow(na.omit(data[,traits[c(2,4)]]))-abd-bcd-lastrow
+			cd<-trait_matrix[10,2]<-nrow(na.omit(data[,traits[c(3,4)]]))-acd-bcd-lastrow
+			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-ab-ac-ad-abc-abd-acd-lastrow
+			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-ab-bc-bd-abc-abd-bcd-lastrow
+			trait_matrix[3,2]<-length(na.omit(data[,traits[3]]))-ac-bc-cd-abc-acd-bcd-lastrow
+			trait_matrix[4,2]<-length(na.omit(data[,traits[4]]))-ad-bd-cd-abd-acd-bcd-lastrow
 		} else if (length(traits)==5){
-			trait_matrix[26,2]<-nrow(na.omit(data[,traits[c(1,2,3,4)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[27,2]<-nrow(na.omit(data[,traits[c(1,2,3,5)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[28,2]<-nrow(na.omit(data[,traits[c(1,2,4,5)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[29,2]<-nrow(na.omit(data[,traits[c(1,3,4,5)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[30,2]<-nrow(na.omit(data[,traits[c(2,3,4,5)]]))-as.numeric(trait_matrix[rows,2])
-			trait_matrix[16,2]<-nrow(na.omit(data[,traits[c(1,2,3)]]))-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[17,2]<-nrow(na.omit(data[,traits[c(1,2,4)]]))-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[18,2]<-nrow(na.omit(data[,traits[c(1,2,5)]]))-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[19,2]<-nrow(na.omit(data[,traits[c(1,3,4)]]))-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[20,2]<-nrow(na.omit(data[,traits[c(1,3,5)]]))-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[21,2]<-nrow(na.omit(data[,traits[c(1,4,5)]]))-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[22,2]<-nrow(na.omit(data[,traits[c(2,3,4)]]))-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[23,2]<-nrow(na.omit(data[,traits[c(2,3,5)]]))-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[24,2]<-nrow(na.omit(data[,traits[c(2,4,5)]]))-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[25,2]<-nrow(na.omit(data[,traits[c(3,4,5)]]))-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[6,2]<-nrow(na.omit(data[,traits[c(1,2)]]))-as.numeric(trait_matrix[16,2])-as.numeric(trait_matrix[17,2])-as.numeric(trait_matrix[18,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[7,2]<-nrow(na.omit(data[,traits[c(1,3)]]))-as.numeric(trait_matrix[16,2])-as.numeric(trait_matrix[19,2])-as.numeric(trait_matrix[20,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[8,2]<-nrow(na.omit(data[,traits[c(1,4)]]))-as.numeric(trait_matrix[17,2])-as.numeric(trait_matrix[19,2])-as.numeric(trait_matrix[21,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[9,2]<-nrow(na.omit(data[,traits[c(1,5)]]))-as.numeric(trait_matrix[18,2])-as.numeric(trait_matrix[20,2])-as.numeric(trait_matrix[21,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[10,2]<-nrow(na.omit(data[,traits[c(2,3)]]))-as.numeric(trait_matrix[16,2])-as.numeric(trait_matrix[22,2])-as.numeric(trait_matrix[23,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[11,2]<-nrow(na.omit(data[,traits[c(2,4)]]))-as.numeric(trait_matrix[17,2])-as.numeric(trait_matrix[22,2])-as.numeric(trait_matrix[24,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[12,2]<-nrow(na.omit(data[,traits[c(2,5)]]))-as.numeric(trait_matrix[18,2])-as.numeric(trait_matrix[23,2])-as.numeric(trait_matrix[24,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[13,2]<-nrow(na.omit(data[,traits[c(3,4)]]))-as.numeric(trait_matrix[19,2])-as.numeric(trait_matrix[22,2])-as.numeric(trait_matrix[25,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[14,2]<-nrow(na.omit(data[,traits[c(3,5)]]))-as.numeric(trait_matrix[20,2])-as.numeric(trait_matrix[23,2])-as.numeric(trait_matrix[25,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[15,2]<-nrow(na.omit(data[,traits[c(4,5)]]))-as.numeric(trait_matrix[21,2])-as.numeric(trait_matrix[24,2])-as.numeric(trait_matrix[25,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[1,2]<-length(na.omit(data[traits[1]]))-as.numeric(trait_matrix[6,2])-as.numeric(trait_matrix[7,2])-as.numeric(trait_matrix[8,2])-as.numeric(trait_matrix[9,2])-as.numeric(trait_matrix[16,2])-as.numeric(trait_matrix[17,2])-as.numeric(trait_matrix[18,2])-as.numeric(trait_matrix[19,2])-as.numeric(trait_matrix[20,2])-as.numeric(trait_matrix[21,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[2,2]<-length(na.omit(data[traits[2]]))-as.numeric(trait_matrix[6,2])-as.numeric(trait_matrix[10,2])-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[16,2])-as.numeric(trait_matrix[17,2])-as.numeric(trait_matrix[18,2])-as.numeric(trait_matrix[22,2])-as.numeric(trait_matrix[23,2])-as.numeric(trait_matrix[24,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[3,2]<-length(na.omit(data[traits[3]]))-as.numeric(trait_matrix[7,2])-as.numeric(trait_matrix[10,2])-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[16,2])-as.numeric(trait_matrix[19,2])-as.numeric(trait_matrix[20,2])-as.numeric(trait_matrix[22,2])-as.numeric(trait_matrix[23,2])-as.numeric(trait_matrix[25,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[4,2]<-length(na.omit(data[traits[4]]))-as.numeric(trait_matrix[8,2])-as.numeric(trait_matrix[11,2])-as.numeric(trait_matrix[13,2])-as.numeric(trait_matrix[15,2])-as.numeric(trait_matrix[17,2])-as.numeric(trait_matrix[19,2])-as.numeric(trait_matrix[21,2])-as.numeric(trait_matrix[22,2])-as.numeric(trait_matrix[24,2])-as.numeric(trait_matrix[25,2])-as.numeric(trait_matrix[26,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
-			trait_matrix[5,2]<-length(na.omit(data[traits[5]]))-as.numeric(trait_matrix[9,2])-as.numeric(trait_matrix[12,2])-as.numeric(trait_matrix[14,2])-as.numeric(trait_matrix[15,2])-as.numeric(trait_matrix[18,2])-as.numeric(trait_matrix[20,2])-as.numeric(trait_matrix[21,2])-as.numeric(trait_matrix[23,2])-as.numeric(trait_matrix[24,2])-as.numeric(trait_matrix[25,2])-as.numeric(trait_matrix[27,2])-as.numeric(trait_matrix[28,2])-as.numeric(trait_matrix[29,2])-as.numeric(trait_matrix[30,2])-as.numeric(trait_matrix[rows,2])
+			abcd<-trait_matrix[26,2]<-nrow(na.omit(data[,traits[c(1,2,3,4)]]))-lastrow
+			abce<-trait_matrix[27,2]<-nrow(na.omit(data[,traits[c(1,2,3,5)]]))-lastrow
+			abde<-trait_matrix[28,2]<-nrow(na.omit(data[,traits[c(1,2,4,5)]]))-lastrow
+			acde<-trait_matrix[29,2]<-nrow(na.omit(data[,traits[c(1,3,4,5)]]))-lastrow
+			bcde<-trait_matrix[30,2]<-nrow(na.omit(data[,traits[c(2,3,4,5)]]))-lastrow
+			abc<-trait_matrix[16,2]<-nrow(na.omit(data[,traits[c(1,2,3)]]))-abcd-abce-lastrow
+			abd<-trait_matrix[17,2]<-nrow(na.omit(data[,traits[c(1,2,4)]]))-abcd-abde-lastrow
+			abe<-trait_matrix[18,2]<-nrow(na.omit(data[,traits[c(1,2,5)]]))-abce-abde-lastrow
+			acd<-trait_matrix[19,2]<-nrow(na.omit(data[,traits[c(1,3,4)]]))-abcd-acde-lastrow
+			ace<-trait_matrix[20,2]<-nrow(na.omit(data[,traits[c(1,3,5)]]))-abce-acde-lastrow
+			ade<-trait_matrix[21,2]<-nrow(na.omit(data[,traits[c(1,4,5)]]))-abde-acde-lastrow
+			bcd<-trait_matrix[22,2]<-nrow(na.omit(data[,traits[c(2,3,4)]]))-abcd-bcde-lastrow
+			bce<-trait_matrix[23,2]<-nrow(na.omit(data[,traits[c(2,3,5)]]))-abce-bcde-lastrow
+			bde<-trait_matrix[24,2]<-nrow(na.omit(data[,traits[c(2,4,5)]]))-abde-bcde-lastrow
+			cde<-trait_matrix[25,2]<-nrow(na.omit(data[,traits[c(3,4,5)]]))-acde-bcde-lastrow
+			ab<-trait_matrix[6,2]<-nrow(na.omit(data[,traits[c(1,2)]]))-abcd-abce-abde-abc-abd-abe-lastrow
+			ac<-trait_matrix[7,2]<-nrow(na.omit(data[,traits[c(1,3)]]))-abcd-abce-acde-abc-acd-ace-lastrow
+			ad<-trait_matrix[8,2]<-nrow(na.omit(data[,traits[c(1,4)]]))-abcd-abde-acde-abd-acd-ade-lastrow
+			ae<-trait_matrix[9,2]<-nrow(na.omit(data[,traits[c(1,5)]]))-abce-abde-acde-abe-ace-ade-lastrow
+			bc<-trait_matrix[10,2]<-nrow(na.omit(data[,traits[c(2,3)]]))-abcd-abce-bcde-abc-bcd-bce-lastrow
+			bd<-trait_matrix[11,2]<-nrow(na.omit(data[,traits[c(2,4)]]))-abcd-abde-bcde-abd-bcd-bde-lastrow
+			be<-trait_matrix[12,2]<-nrow(na.omit(data[,traits[c(2,5)]]))-abce-abde-bcde-abe-bce-bde-lastrow
+			cd<-trait_matrix[13,2]<-nrow(na.omit(data[,traits[c(3,4)]]))-abcd-acde-bcde-acd-bcd-cde-lastrow
+			ce<-trait_matrix[14,2]<-nrow(na.omit(data[,traits[c(3,5)]]))-abce-acde-bcde-ace-bce-cde-lastrow
+			de<-trait_matrix[15,2]<-nrow(na.omit(data[,traits[c(4,5)]]))-abde-acde-bcde-ade-bde-cde-lastrow
+			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-abcd-abce-abde-acde-abc-abd-abe-acd-ace-ade-ab-ac-ad-ae-lastrow
+			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-abcd-abce-abde-bcde-abc-abd-abe-bcd-bce-bde-ab-bc-bd-be-lastrow
+			trait_matrix[3,2]<-length(na.omit(data[,traits[3]]))-abcd-abce-acde-bcde-abc-acd-ace-bcd-bce-cde-ac-bc-cd-ce-lastrow
+			trait_matrix[4,2]<-length(na.omit(data[,traits[4]]))-abcd-abde-acde-bcde-abd-acd-ade-bcd-bde-cde-ad-bd-cd-de-lastrow
+			trait_matrix[5,2]<-length(na.omit(data[,traits[5]]))-abce-abde-acde-bcde-abe-ace-ade-bce-bde-cde-ae-be-ce-de-lastrow
 		}
+		colnames(trait_matrix)<-c('Trait Overlap','Combinations')
+		if(plot==TRUE){
+			venn<-venn_overlap(trait_matrix)
+			plot(venn)
+		}
+		return(trait_matrix)
 }
 
-make_trait_matrix(c('a','b','c','d','e'))
-
-# use strsplit and the which(colnames(data)==traits) stuff to force it to select the right answers?
-
-# test: should be A=2, B=3, C=5, AB=2, AC=1, BC=1, ABC=3
-a<-round(runif(17,max=20))
-b<-round(runif(17,max=20))
-c<-round(runif(17,max=20))
-a[9:17]<-NA
-b[c(8,7,6,13:17)]<-NA
-c[c(4,5,7,8,10,11,12)]<-NA
-df<-data.frame(a,b,c)
-
-trait_overlap(c('a','b','c'), df)
-
-# test2: should be A=1, B=1, C=1, D=2, AB=3, AC=2, AD=1, BC=1, BD=1, CD=2, ABC=2, ABD=0, ACD=0, BCD=1, ABCD=2
-
-a<-round(runif(20,max=20))
-b<-round(runif(20,max=20))
-c<-round(runif(20,max=20))
-d<-round(runif(20,max=20))
-a[c(5,12:15,17:20)]<-NA
-b[c(9:11,14:16,18:20)]<-NA
-c[c(6:8,11,13,16,17,19,20)]<-NA
-d[c(3,4,6:10,12,16:18)]<-NA
-df<-data.frame(a,b,c,d)
-
-trait_overlap(c('a','b','c','d'), df)
-
-# test 3: should be ascending 1-4 in the categories
-a<-round(runif(76,max=20))
-b<-round(runif(76,max=20))
-c<-round(runif(76,max=20))
-d<-round(runif(76,max=20))
-e<-round(runif(76,max=20))
-a[c(12,13,31:40,51:63,67:76)]<-NA
-b[c(22:30,37:40,42:50,57:66,71:76)]<-NA
-c[c(7:10,17:21,27:30,34:36,41,44:50,52:56,62:70,72:76)]<-NA
-d[c(4:6,11,14:16,21,24:26,32,33,41:43,47:51,54:56,61,64:71,74:76)]<-NA
-e[c(2,3,14:20,22,23,31,41:46,51:53,57:60,64:73)]<-NA
-df<-data.frame(a,b,c,d,e)
-df
-
-traits=c('a','b','c','d')
-trait_overlap(c('a','b','c','d','e'),df)
-nrow(na.omit(df[,traits[c(1,2,3,4)]]))-as.numeric(1)
+venn_overlap<-function(trait_matrix, ...){
+	if(nrow(trait_matrix)==1){
+		warning('Cannot plot overlap of one trait! See matrix for number of traits in this category.')
+	}else if(nrow(trait_matrix)==3){
+		venn<-euler(combinations=c("A"=as.numeric(trait_matrix[1,2]), "B"=as.numeric(trait_matrix[2,2]), "A&B"=as.numeric(trait_matrix[3,2])))
+		plot(venn, counts=TRUE, fill=gg_colour_hue(2), fill_opacity=0.6, labels=c(trait_matrix[1:2,1]))
+	} else if(nrow(trait_matrix)==7){
+		venn<-euler(combinations=c("A"=as.numeric(trait_matrix[1,2]), "B"=as.numeric(trait_matrix[2,2]), "C"=as.numeric(trait_matrix[3,2]), "A&B"=as.numeric(trait_matrix[4,2]), "A&C"=as.numeric(trait_matrix[5,2]), "B&C"=as.numeric(trait_matrix[6,2]), "A&B&C"=as.numeric(trait_matrix[7,2])))
+		plot(venn, counts=TRUE, fill=gg_colour_hue(3), fill_opacity=0.6, labels=c(trait_matrix[1:3],1))
+	} else if(nrow(trait_matrix)==15){
+		venn<-euler(combinations=c("A"=as.numeric(trait_matrix[1,2]), "B"=as.numeric(trait_matrix[2,2]), "C"=as.numeric(trait_matrix[3,2]), "D"=as.numeric(trait_matrix[4,2]), "A&B"=as.numeric(trait_matrix[5,2]), "A&C"=as.numeric(trait_matrix[6,2]), "A&D"=as.numeric(trait_matrix[7,2]), "B&C"=as.numeric(trait_matrix[8,2]), "B&D"=as.numeric(trait_matrix[9,2]), "C&D"=as.numeric(trait_matrix[10,2]), "A&B&C"=as.numeric(trait_matrix[11,2]), "A&B&D"=as.numeric(trait_matrix[12,2]), "A&C&D"=as.numeric(trait_matrix[13,2]), "B&C&D"=as.numeric(trait_matrix[14,2]), "A&B&C&D"=as.numeric(trait_matrix[15,2])))
+		plot(venn, counts=TRUE, fill=gg_colour_hue(4), fill_opactiy=0.6, labels=c(trait_matrix[1:4,1]))
+	} else if(nrow(trait_matrix)==31){
+		venn<-euler(combinations=c("A"=as.numeric(trait_matrix[1,2]), "B"=as.numeric(trait_matrix[2,2]), "C"=as.numeric(trait_matrix[3,2]), "D"=as.numeric(trait_matrix[4,2]), "E"=as.numeric(trait_matrix[5,2]), "A&B"=as.numeric(trait_matrix[6,2]), "A&C"=as.numeric(trait_matrix[7,2]), "A&D"=as.numeric(trait_matrix[8,2]), "A&E"=as.numeric(trait_matrix[9,2]), "B&C"=as.numeric(trait_matrix[10,2]), "B&D"=as.numeric(trait_matrix[11,2]), "B&E"=as.numeric(trait_matrix[12,2]), "C&D"=as.numeric(trait_matrix[13,2]), "C&E"=as.numeric(trait_matrix[14,2]), "D&E"=as.numeric(trait_matrix[15,2]), "A&B&C"=as.numeric(trait_matrix[16,2]), "A&B&D"=as.numeric(trait_matrix[17,2]), "A&B&E"=as.numeric(trait_matrix[18,2]), "A&C&D"=as.numeric(trait_matrix[19,2]), "A&C&E"=as.numeric(trait_matrix[20,2]), "A&D&E"=as.numeric(trait_matrix[21,2]), "B&C&D"=as.numeric(trait_matrix[22,2]), "B&C&E"=as.numeric(trait_matrix[23,2]), "B&D&E"=as.numeric(trait_matrix[24,2]), "C&D&E"=as.numeric(trait_matrix[25,2]), "A&B&C&D"=as.numeric(trait_matrix[26,2]), "A&B&C&E"=as.numeric(trait_matrix[27,2]), "A&B&D&E"=as.numeric(trait_matrix[28,2]), "A&C&D&E"=as.numeric(trait_matrix[29,2]), "B&C&D&E"=as.numeric(trait_matrix[30,2]), "A&B&C&D&E"=as.numeric(trait_matrix[31,2])))
+		plot(venn, counts=TRUE, fill=gg_colour_hue(5), fill_opacity=0.6, labels=c(trait_matrix[1:5,1]))
+	}
+}
