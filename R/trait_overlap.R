@@ -24,12 +24,13 @@ if(length(traits)>5){warning("trait_overlap currently supports maximum five trai
 trait_overlap<-function(traits, data, plot=FALSE,...){
 	trait_matrix<-make_trait_matrix(traits)
 	rows<-nrow(trait_matrix)
-	lastrow<-suppressWarnings(trait_matrix[rows,2]<-nrow(na.omit(data[which(colnames(data)==traits)])))
 	if(length(traits)==1){
 		} else if (length(traits)==2){
+			lastrow<-trait_matrix[3,2]<-nrow(na.omit(data[,traits[c(1,2)]]))
 			trait_matrix[1,2]<-length(na.omit(data[,traits[1]]))-lastrow
 			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-lastrow
 		} else if (length(traits)==3){
+			lastrow<-trait_matrix[7,2]<-nrow(na.omit(data[,traits[c(1,2,3)]]))
 			ab<-trait_matrix[4,2]<-nrow(na.omit(data[,traits[c(1,2)]]))-lastrow
 			ac<-trait_matrix[5,2]<-nrow(na.omit(data[,traits[c(1,3)]]))-lastrow
 			bc<-trait_matrix[6,2]<-nrow(na.omit(data[,traits[c(2,3)]]))-lastrow
@@ -37,6 +38,7 @@ trait_overlap<-function(traits, data, plot=FALSE,...){
 			trait_matrix[2,2]<-length(na.omit(data[,traits[2]]))-lastrow-ab-ac
 			trait_matrix[3,2]<-length(na.omit(data[,traits[3]]))-lastrow-ac-bc
 		} else if (length(traits)==4){
+			lastrow<-trait_matrix[15,2]<-nrow(na.omit(data[,traits[c(1,2,3,4)]]))
 			abc<-trait_matrix[11,2]<-nrow(na.omit(data[,traits[c(1,2,3)]]))-lastrow
 			abd<-trait_matrix[12,2]<-nrow(na.omit(data[,traits[c(1,2,4)]]))-lastrow
 			acd<-trait_matrix[13,2]<-nrow(na.omit(data[,traits[c(1,3,4)]]))-lastrow
@@ -52,6 +54,7 @@ trait_overlap<-function(traits, data, plot=FALSE,...){
 			trait_matrix[3,2]<-length(na.omit(data[,traits[3]]))-ac-bc-cd-abc-acd-bcd-lastrow
 			trait_matrix[4,2]<-length(na.omit(data[,traits[4]]))-ad-bd-cd-abd-acd-bcd-lastrow
 		} else if (length(traits)==5){
+			lastrow<-trait_matrix[31,2]<-nrow(na.omit(data[,traits[c(1,2,3,4,5)]]))
 			abcd<-trait_matrix[26,2]<-nrow(na.omit(data[,traits[c(1,2,3,4)]]))-lastrow
 			abce<-trait_matrix[27,2]<-nrow(na.omit(data[,traits[c(1,2,3,5)]]))-lastrow
 			abde<-trait_matrix[28,2]<-nrow(na.omit(data[,traits[c(1,2,4,5)]]))-lastrow
