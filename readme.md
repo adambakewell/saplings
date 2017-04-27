@@ -15,8 +15,8 @@ library(saplings)
 ```
 
 ## Latest updates
-
-Version 0.0-2: [New function trait_overlap()](#trait_overlap), which allows you to give R a list of traits (or other variables in a data frame where rows are cases) and will return a matrix of the overlap between different traits.
+* Version 0.0-3: [Replaced trim_equal_branch() function with trim_tree()](#trim_tree) so that the function no longer automatically sets branch as equal.
+* Version 0.0-2: [New function trait_overlap()](#trait_overlap), if you give this function a list of traits (or other variables in a data frame where rows are cases) and will return a matrix (and a Venn diagram if you want one!) of the overlap between different traits.
 
 ## Examples
 ### u_in_tree
@@ -108,8 +108,8 @@ print(trimmed_data)
 9       I     NA      1
 ```
 
-### trim_equal_branch
-The `trim_equal_branch()` function trims a phylogeny to fit a dataset, mainly for visualisation, it also sets equal branch lengths so that it can be used in comparative analysis.
+### trim_tree
+The `trim_tree()` function trims a phylogeny to fit a dataset, mainly for visualisation but also required for example for ancestral state reconstruction in ape. Choosing `set.equal.branches=TRUE` will also add branch lengths of one to a phylogeny.
 
 ```r
 # simulate a phylogeny with no branch lengths
@@ -122,7 +122,7 @@ trait2<-c(NA,4,2,2,1,3,NA,NA,1,2)
 data<-data.frame(Species, trait1, trait2)
 
 # use function to trim phylogeny to dataset and set equal branch lengths
-new_tree<-trim_equal_branch(tree=tree, species=data$Species)
+new_tree<-trim_tree(tree=tree, species=data$Species, set.equal.branches=TRUE)
 
 # show old tree compared to new tree
 par(mfrow=c(1,2))
