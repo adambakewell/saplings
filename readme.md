@@ -15,8 +15,17 @@ library(saplings)
 ```
 
 ## Latest updates
+* Version 0.0-4: [New function phylo_barplot()](#phylo_barplot) under development.
 * Version 0.0-3: [Replaced trim_equal_branch() function with trim_tree()](#trim_tree) so that the function no longer automatically sets branch as equal.
 * Version 0.0-2: [New function trait_overlap()](#trait_overlap), if you give this function a list of traits (or other variables in a data frame where rows are cases) and will return a matrix (and a Venn diagram if you want one!) of the overlap between different traits.
+
+## Contents
+* [u_in_tree()](#u_in_tree)
+* [tips_with_traits()](#tips_with_traits)
+* [trim_to_phy()](#trim_to_phy)
+* [trim_tree()](#trim_tree)
+* [trait_overlap()](#trait_overlap)
+* [phylo_barplot()](#phylo_barplot) (currently under development!)
 
 ## Examples
 ### u_in_tree
@@ -156,3 +165,67 @@ trait_overlap(traits=c('trait1', 'trait2', 'trait3’), data=data, plot=TRUE)
 ```
 
 ![venn diagram showing overlap of traits using the trait overlap function](figures/trait_overlap.png)
+
+### phylo_barplot
+The `phylo_barplot()` function creates barplots using the output of PGLS models. Standard plots will show the mean and standard error (or deviation etc.) of the raw data, rather than the phylogenetically adjusted data. This function takes the estimates and standard deviations straight from the models and plots these instead. It can make it easier to see why relationships in the data are non-significant.
+
+```r
+data(chickwts)		# load chickwts from the selection of datasets in R. We’re going to pretend that individuals are different species just as an example
+data<-as.data.frame(chickwts)
+
+tree<-pbtree(n=71) 		# simulate a phylogeny for the chickens
+data$Species<-tree$tip.label	# add column of species 'names'
+
+comp<-comparative.data(data=data, phy=tree, names.col='Species', na.omit=F, vcv=T)		# create comparative object for PGLS
+
+model<-pgls(weight~feed, data=comp, lambda=0.75)	# I’m fixing lambda at 0.75 so that the phylogenetic means are different from the raw means (if the ML value of lambda is not 0 then they will be in your analysis too!)
+summary(model)
+
+Call:
+pgls(formula = weight ~ feed, data = comp, lambda = 0.75)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-137.77  -31.49  -11.87   19.35   71.20 
+
+Branch length transformations:
+
+kappa  [Fix]  : 1.000
+lambda [Fix]  : 0.750
+delta  [Fix]  : 1.000
+
+Coefficients:
+              Estimate Std. Error t value  Pr(>|t|)    
+(Intercept)    338.919     37.874  8.9485 6.102e-13 ***
+feedhorsebean -192.695     57.936 -3.3260  0.001452 ** 
+feedlinseed   -105.226     55.995 -1.8792  0.064700 .  
+feedmeatmeal   -79.300     33.646 -2.3569  0.021452 *  
+feedsoybean   -119.604     48.279 -2.4773  0.015846 *  
+feedsunflower  -12.848     48.334 -0.2658  0.791214    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 43.3 on 65 degrees of freedom
+Multiple R-squared: 0.2696,	Adjusted R-squared: 0.2134 
+F-statistic: 4.798 on 5 and 65 DF,  p-value: 0.0008564 
+
+
+# now we can compare the barplots for raw and phylogenetic data
+par(mfrow=c(1,2))
+# first raw means and standard errors
+meansWeight<-tapply(data$weight, data$feed, mean)
+serrsWeight<-tapply(data$weight, data$feed, function(x) sd(x)/sqrt(length(x)))
+
+non.phy<-barplot(meansWeight, ylim=c(0,400), xlab='Feed Type', ylab='Weight', cex.lab=1.3, col='lightsteelblue')
+arrows(non.phy, meansWeight, non.phy, meansWeight+serrsWeight, angle=90)
+arrows(non.phy, meansWeight, non.phy, meansWeight-serrsWeight, angle=90)
+mtext('(a)', font=2, adj=0, cex=1.5, padj=-1)
+
+# now lets plot the phylogenetic version
+names=c('casein','horsebean','linseed','meatmeal','soybean', 'sunflower')	# I am working on a way to get this done automatically within the function
+phylo_barplot(model, ylim=c(0,400), xlab='Feed Type', ylab='Weight', cex.lab=1.3, col='lightseagreen', names.arg=names)
+mtext('(b)', font=2, adj=0, cex=1.5, padj=-1)
+```
+Hopefully you can see that the phylogenetic verison (b) shows the uncertainty around the means, and the lower level of significance between some levels!
+
+![comparison between raw means and standard errors and phylogenetic means and standard errors](figures/phylobar.png)

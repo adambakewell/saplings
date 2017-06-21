@@ -1,10 +1,10 @@
 Package: saplings
 Title: saplings
-Version: 0.0-3
+Version: 0.0-4
 Authors@R: person("Adam", "Bakewell", email = "ab1348@york.ac.uk", role = c("aut", "cre"))
 Description: Primitive functions for speeding up elements of a phylogenetic comparative workflow
-Depends: R (>= 3.3.1), caper, eulerr
+Depends: R (>= 3.3.1), caper, eulerr, phytools
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/adambakewell/tenuous-saplings
+URL: https://github.com/adambakewell/saplings

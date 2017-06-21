@@ -24,3 +24,5 @@ phylo_barplot<-function(model, ylim, ...){
 	}
 }
 }
+
+?barplot
